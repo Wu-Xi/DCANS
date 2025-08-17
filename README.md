@@ -21,6 +21,10 @@ In this work, we propose **Dual Context-Aware Negative Sampling (DCANS)**, which
 
 Our method improves both **alignment** and **uniformity** in the learned embeddings, leading to more robust recommendations.
 
+<p align="center">
+  <img src="assets/Framework1.png" alt="Framework" width="700">
+</p>
+
 ---
 
 ## 🚀 Features
@@ -30,8 +34,53 @@ Our method improves both **alignment** and **uniformity** in the learned embeddi
 
 ---
 
+## ⚙️ Environment Requirements
+
+The code has been tested with **Python 3.8.0** and **PyTorch 2.0.0**.  
+
+Install dependencies with:
+
+```bash
+pip install -r requirements.txt
+```
+
+### Required Packages
+- `torch==2.0.0`
+- `numpy==1.22.4`
+- `scipy==1.10.1`
+- `scikit-learn==1.1.3`
+- `prettytable==2.1.0`
 
 
+## 🏃‍♂️ Training
+
+All command-line arguments are defined in [`utils/parser.py`](utils/parser.py).  
+Below are the **key arguments** when using **DCANS**:
+
+```bash
+--alpha         # Controls how strongly synthesized hard negatives are pushed towards positives
+--window_length # Length of the user's historical interaction sequence
+--n_negs        # Number of negative candidates sampled with DCANS
+```
+
+
+Example: LightGCN with DCANS
+```Python
+# Ali dataset
+python main.py --dataset ali --dim 64 --lr 0.001 --l2 0.001 \
+  --batch_size 2048 --gpu_id 1 --pool mean --ns dcans \
+  --alpha 5.3 --n_negs 64 --window_length 5 > dcans_lightgcn_ali.log
+
+# Gowalla dataset
+python main.py --dataset gowalla --dim 64 --lr 0.001 --l2 0.001 \
+  --batch_size 2048 --gpu_id 1 --pool mean --ns dcans \
+  --alpha 0.02 --n_negs 64 --window_length 8 > dcans_lightgcn_gowalla.log
+
+# Amazon dataset
+python main.py --dataset amazon --dim 64 --lr 0.001 --l2 0.001 \
+  --batch_size 2048 --gpu_id 1 --pool mean --ns dcans \
+  --alpha 2 --n_negs 64 --window_length 5 > dcans_lightgcn_amazon.log
+```
 
 
 
@@ -47,12 +96,5 @@ If you find this repository useful, please cite our paper:
   publisher={ACM}
 }
 ```
-
-
-
-
-
-
-
 
 
