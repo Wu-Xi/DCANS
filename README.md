@@ -5,21 +5,25 @@
 Official PyTorch implementation of our CIKM 2025 paper:
 
 > **Dual Context-Aware Negative Sampling Strategy for Graph-based Collaborative Filtering**  
-> Xi Wu, Wenzhe Zhang, [Add other authors]  
+> Xi Wu, Wenzhe Zhang, Liangwei Yang, Xiaohan Fang, Jiquan Peng, Jibing Gong. 
 > Accepted at *The 34th ACM International Conference on Information and Knowledge Management (CIKM 2025)*
 
 ---
 
 ## 📌 Introduction
+Negative sampling(NS) is a core component in training collaborative filtering models with implicit feedback, as it directly determines the quality and direction of the optimization signal.
+Recent mixup-based negative sampling strategies have shown promising improvements by synthesizing harder negatives near the decision boundary. However, these methods typically assume that all observed interactions are reliable positives.
 
-Negative sampling plays a critical role in training graph-based collaborative filtering (GCF) models.  
-Traditional negative sampling strategies often ignore **global** and **local** contextual information, leading to suboptimal performance.  
+In practice, implicit feedback data often contains false positives, such as accidental clicks or exploratory interactions. Blindly pairing such noisy positives with overly hard negatives may amplify misleading gradients and degrade recommendation performance.
 
-In this work, we propose **Dual Context-Aware Negative Sampling (DCANS)**, which integrates:
-- **Global context**: semantic similarities across the entire user–item graph.
-- **Local context**: neighborhood-aware sampling to capture fine-grained relationships.
+In this work, we propose **Dual Context-Aware Negative Sampling (DCANS)**, a principled negative sampling strategy for graph-based collaborative filtering.
+Instead of uniformly hardening all training samples, DCANS explicitly models two complementary contexts derived from the optimization structure of the BPR loss:
 
-Our method improves both **alignment** and **uniformity** in the learned embeddings, leading to more robust recommendations.
+- **Positive reliability context**: How well an observed positive item aligns with the user’s true interest.
+
+- **Negative relevance context**: How relevant a candidate hard negative is to the same user interest.
+
+By jointly considering these two factors, DCANS adjusts both the training direction and negative hardness, mitigating the negative impact of false positives while preserving the benefits of hard negative sampling.
 
 <p align="center">
   <img src="assets/Framework1.png" alt="Framework" width="700">
@@ -28,8 +32,10 @@ Our method improves both **alignment** and **uniformity** in the learned embeddi
 ---
 
 ## 🚀 Features
-- **Dual Context-Aware Sampling**: Combines global and local graph contexts for negative sample selection.
+- **Dual Context-Aware Design**: DCANS is built upon a theoretical decomposition of the BPR loss, revealing: **a false-positive correction term**, and **a negative boundary reweighting term**. 
+
 - **Plug-and-Play**: Can be easily integrated into existing GCF models such as LightGCN, NGCF, etc.
+
 - **State-of-the-Art Performance**: Achieves significant improvement on multiple benchmark datasets.
 
 ---
@@ -88,12 +94,21 @@ python main.py --dataset amazon --dim 64 --lr 0.001 --l2 0.001 \
 If you find this repository useful, please cite our paper:
 
 ```bibtex
+
 @inproceedings{wu2025dcans,
-  title={Dual Context-Aware Negative Sampling Strategy for Graph-based Collaborative Filtering},
-  author={Wu, Xi and Zhang, Wenzhe and Others},
-  booktitle={Proceedings of the 34th ACM International Conference on Information and Knowledge Management},
-  year={2025},
-  publisher={ACM}
+author = {Wu, Xi and Zhang, Wenzhe and Yang, Liangwei and Fang, Xiaohan and Peng, Jiquan and Gong, Jibing},
+title = {Dual Context-Aware Negative Sampling Strategy for Graph-based Collaborative Filtering},
+year = {2025},
+isbn = {9798400720406},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3746252.3760972},
+doi = {10.1145/3746252.3760972},
+booktitle = {Proceedings of the 34th ACM International Conference on Information and Knowledge Management},
+pages = {5356–5360},
+numpages = {5},
+location = {Seoul, Republic of Korea},
+series = {CIKM '25}
 }
 ```
 
